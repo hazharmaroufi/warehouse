@@ -1,32 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
+import { Route, Routes } from "react-router";
+import ProductsList from "./components/ProductsList";
+import Home from "./components/Home";
 
 function App() {
-  const [items, setItems] = useState([]);
-  const queryKey = ["getItems"];
-  const queryFn = () => {
-    axios
-      .get("http://localhost:3000/products?page=1&limit=10")
-      .then((response) => {
-        setItems(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const { isPending, data } = useQuery({
-    queryKey,
-    queryFn,
-  });
-  if (isPending) return "Loading...";
   return (
-    <>
-      {items?.data?.map((item) => (
-        <p key={item.id}>{item.name}</p>
-      ))}
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/products" element={<ProductsList />} />
+    </Routes>
   );
 }
 
