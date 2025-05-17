@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../services/axiosData";
+import { useState } from "react";
 
 const schema = yup
   .object({
@@ -18,6 +19,7 @@ const schema = yup
   .required();
 
 function RegisterForm() {
+  const [registerMessage, setRegisterMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -34,6 +36,7 @@ function RegisterForm() {
       })
       .then(function (response) {
         console.log(response);
+        setRegisterMessage(() => "user registered successfull");
         reset();
       })
       .catch(function (error) {
@@ -42,7 +45,7 @@ function RegisterForm() {
   };
 
   return (
-    <div className=" bg-gray-50 flex justify-center items-center  min-h-screen ">
+    <div className=" m-8 rounded-md bg-white p-16 ">
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <input
           {...register("username")}
@@ -64,7 +67,8 @@ function RegisterForm() {
         />
         <br />
         <p>{errors.confirmPassword?.message}</p>
-        <input type="submit" />
+        <button type="submit">عضویت</button>
+        <p>{registerMessage}</p>
       </form>
     </div>
   );
