@@ -22,6 +22,7 @@ function LoginForm() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
   const navigate = useNavigate();
 
   const onSubmit = (data) => {
@@ -30,7 +31,8 @@ function LoginForm() {
         username: data.username,
         password: data.password,
       })
-      .then(() => {
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("isAuthenticated", "true");
         navigate("/products");
       })
