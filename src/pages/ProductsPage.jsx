@@ -28,6 +28,7 @@ function ProductsPage() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -43,6 +44,7 @@ function ProductsPage() {
       .then(() => {
         queryClient.invalidateQueries(["products"]);
         setEd("add");
+        reset();
         close();
       })
       .catch((error) => {
@@ -60,6 +62,7 @@ function ProductsPage() {
       .then(() => {
         queryClient.invalidateQueries(["products"]);
         setEd("add");
+        reset();
         close();
       })
       .catch((error) => {
@@ -234,6 +237,9 @@ function ProductsPage() {
                     {...register("name")}
                     id="name"
                     className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
+                    placeholder={
+                      items?.find((item) => item.id === productId)?.name || ""
+                    }
                   />
                   <br />
                   <p>{errors.name?.message}</p>
@@ -242,6 +248,10 @@ function ProductsPage() {
                     id="quantity"
                     {...register("quantity")}
                     className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
+                    placeholder={
+                      items?.find((item) => item.id === productId)?.quantity ||
+                      ""
+                    }
                   />
                   <br />
                   <p>{errors.quantity?.message}</p>
@@ -249,6 +259,9 @@ function ProductsPage() {
                   <input
                     {...register("price")}
                     id="price"
+                    placeholder={
+                      items?.find((item) => item.id === productId)?.price || ""
+                    }
                     className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
                   />
                   <br />
