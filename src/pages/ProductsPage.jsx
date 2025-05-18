@@ -29,6 +29,7 @@ function ProductsPage() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -43,6 +44,7 @@ function ProductsPage() {
       .then(() => {
         queryClient.invalidateQueries(["products"]);
         setEd("add");
+        reset();
         close();
       })
       .catch((error) => {
@@ -59,6 +61,7 @@ function ProductsPage() {
       })
       .then(() => {
         queryClient.invalidateQueries(["products"]);
+        reset();
         setEd("add");
         close();
       })
@@ -108,181 +111,201 @@ function ProductsPage() {
 
   return (
     <>
-      {isAuth ? (
-        <button
-          onClick={() => {
-            setEd("add");
-            open();
-          }}
-          className=" bg-blue-400 rounded m-2 p-2 cursor-pointer "
-        >
-          اضافه کردن محصول
-        </button>
-      ) : (
-        ""
-      )}
-
-      <table className="table-auto w-3xl text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th>نام کالا</th>
-            <th>موجودی</th>
-            <th>قیمت</th>
-            <th>شناسه کالا</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {items?.map((item) => (
-            <tr
-              key={item.id}
-              className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
-            >
-              <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>{item.price}</td>
-              <td>{item.id}</td>
-              <td>
-                {isAuth ? (
-                  <div className="flex">
-                    <button onClick={() => editHandler(item.id)}>
-                      <img src="edit.png" alt="" />
-                    </button>
-                    <button onClick={() => deleteHandler(item.id)}>
-                      <img src="trash.png" alt="" />
-                    </button>
-                  </div>
-                ) : (
-                  ""
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <Dialog
-        open={isOpen}
-        as="div"
-        className="relative z-10 focus:outline-none"
-        onClose={close}
-      >
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-gray-500 p-6 backdrop-blur-2xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-            >
-              {ed === "add" ? (
-                <DialogTitle
-                  as="h3"
-                  className="text-base/7 font-medium text-white"
-                >
-                  اضافه کردن محصول
-                </DialogTitle>
-              ) : (
-                <DialogTitle
-                  as="h3"
-                  className="text-base/7 font-medium text-white"
-                >
-                  ویرایش محصول
-                </DialogTitle>
-              )}
-              {ed === "add" ? (
-                <form onSubmit={handleSubmit(onSubmit)} className="">
-                  <label htmlFor="name"> نام کالا</label> <br />
-                  <input
-                    {...register("name")}
-                    id="name"
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                  />
-                  <br />
-                  <p>{errors.name?.message}</p>
-                  <label htmlFor="quantity"> تعداد موجودی</label> <br />
-                  <input
-                    {...register("quantity")}
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                  />
-                  <br />
-                  <p>{errors.quantity?.message}</p>
-                  <label htmlFor="price"> قیمت</label> <br />
-                  <input
-                    {...register("price")}
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                  />
-                  <br />
-                  <p>{errors.price?.message}</p>
-                  <div className="flex gap-2 mt-4">
-                    <button
-                      type="submit"
-                      className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                    >
-                      اضافه کردن
-                    </button>
-                    <Button
-                      className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                      onClick={close}
-                    >
-                      انصراف
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <form onSubmit={handleSubmit(onEdit)} className="">
-                  <label htmlFor="name"> نام کالا</label> <br />
-                  <input
-                    {...register("name")}
-                    id="name"
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                    placeholder={
-                      items?.find((item) => item.id === productId)?.name || ""
-                    }
-                  />
-                  <br />
-                  <p>{errors.name?.message}</p>
-                  <label htmlFor="quantity"> تعداد موجودی</label> <br />
-                  <input
-                    id="quantity"
-                    {...register("quantity")}
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                    placeholder={
-                      items?.find((item) => item.id === productId)?.quantity ||
-                      ""
-                    }
-                  />
-                  <br />
-                  <p>{errors.quantity?.message}</p>
-                  <label htmlFor="price"> قیمت</label> <br />
-                  <input
-                    {...register("price")}
-                    id="price"
-                    placeholder={
-                      items?.find((item) => item.id === productId)?.price || ""
-                    }
-                    className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
-                  />
-                  <br />
-                  <p>{errors.price?.message}</p>
-                  <div className="flex gap-2 mt-4">
-                    <button
-                      type="submit"
-                      className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                    >
-                      ویرایش
-                    </button>
-                    <Button
-                      className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                      onClick={close}
-                    >
-                      انصراف
-                    </Button>
-                  </div>
-                </form>
-              )}
-            </DialogPanel>
+      <div className="bg-gray-50 h-screen ">
+        <div className="container m-auto pt-8 ">
+          <div className="flex justify-between bg-white py-2 px-8 ">
+            <div>
+              <input type="search" name="" id="" placeholder="جستجوی کالا" />
+            </div>
+            <div> هه ژار معروفی</div>
           </div>
+
+          <div className="flex justify-between items-center justify-items-center mt-8 mb-8 ">
+            <div>
+              <p className="text-xl">مدیریت کالا</p>
+            </div>
+            <div>
+              {isAuth ? (
+                <button
+                  onClick={() => {
+                    setEd("add");
+                    open();
+                  }}
+                  className="bg-blue-300 text-white w-full  p-2 rounded-md"
+                >
+                  افزودن محصول
+                </button>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+
+          <table className="table-auto w-full">
+            <thead className="text-sm text-gray-700  bg-gray-200  ">
+              <tr>
+                <th className="p-2 ">نام کالا</th>
+                <th>موجودی</th>
+                <th>قیمت</th>
+                <th>شناسه کالا</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {items?.map((item) => (
+                <tr
+                  key={item.id}
+                  className="text-sm text-gray-700  bg-white border-t-0 border-l-0 border-r-0 border-b-1 border-gray-50"
+                >
+                  <td className="p-2">{item.name}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price}</td>
+                  <td>{item.id}</td>
+                  <td>
+                    {isAuth ? (
+                      <div className="flex">
+                        <button onClick={() => editHandler(item.id)}>
+                          <img src="edit.png" alt="" />
+                        </button>
+                        <button onClick={() => deleteHandler(item.id)}>
+                          <img src="trash.png" alt="" />
+                        </button>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <Dialog
+            open={isOpen}
+            as="div"
+            className="relative z-10 focus:outline-none"
+            onClose={close}
+          >
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-10 w-screen overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <DialogPanel
+                  transition
+                  className="w-full max-w-md rounded-xl bg-gray-50 p-6 backdrop-blur-2xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
+                >
+                  {ed === "add" ? (
+                    <DialogTitle
+                      as="h3"
+                      className="text-center mb-4 font-medium "
+                    >
+                      اضافه کردن محصول
+                    </DialogTitle>
+                  ) : (
+                    <DialogTitle
+                      as="h3"
+                      className="text-center mb-4 font-medium "
+                    >
+                      ویرایش اطلاعات
+                    </DialogTitle>
+                  )}
+                  {ed === "add" ? (
+                    <form onSubmit={handleSubmit(onSubmit)} className="">
+                      <label htmlFor="name"> نام کالا</label> <br />
+                      <input
+                        {...register("name")}
+                        id="name"
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                      />
+                      <br />
+                      <p>{errors.name?.message}</p>
+                      <label htmlFor="quantity"> تعداد موجودی</label> <br />
+                      <input
+                        {...register("quantity")}
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                      />
+                      <br />
+                      <p>{errors.quantity?.message}</p>
+                      <label htmlFor="price"> قیمت</label> <br />
+                      <input
+                        {...register("price")}
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                      />
+                      <br />
+                      <p>{errors.price?.message}</p>
+                      <div className="flex gap-2 mt-4">
+                        <button
+                          type="submit"
+                          className="bg-blue-300 text-white w-full mt-6 p-2 rounded-md"
+                        >
+                          ایجاد
+                        </button>
+                        <Button
+                          className="bg-gray-300  w-full mt-6 p-2 rounded-md text-black "
+                          onClick={close}
+                        >
+                          انصراف
+                        </Button>
+                      </div>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleSubmit(onEdit)} className="">
+                      <label htmlFor="name"> نام کالا</label> <br />
+                      <input
+                        {...register("name")}
+                        id="name"
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                        placeholder={
+                          items?.find((item) => item.id === productId)?.name ||
+                          ""
+                        }
+                      />
+                      <br />
+                      <p>{errors.name?.message}</p>
+                      <label htmlFor="quantity"> تعداد موجودی</label> <br />
+                      <input
+                        id="quantity"
+                        {...register("quantity")}
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                        placeholder={
+                          items?.find((item) => item.id === productId)
+                            ?.quantity || ""
+                        }
+                      />
+                      <br />
+                      <p>{errors.quantity?.message}</p>
+                      <label htmlFor="price"> قیمت</label> <br />
+                      <input
+                        {...register("price")}
+                        id="price"
+                        placeholder={
+                          items?.find((item) => item.id === productId)?.price ||
+                          ""
+                        }
+                        className=" bg-gray-200 w-full  mt-1 mb-4 rounded-md p-1"
+                      />
+                      <br />
+                      <p>{errors.price?.message}</p>
+                      <div className="flex gap-2 mt-4">
+                        <button
+                          type="submit"
+                          className="bg-blue-300 text-white w-full mt-6 p-2 rounded-md"
+                        >
+                          ثبت اطلاعات جدید
+                        </button>
+                        <Button
+                          className="bg-gray-300  w-full mt-6 p-2 rounded-md text-black "
+                          onClick={close}
+                        >
+                          انصراف
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+                </DialogPanel>
+              </div>
+            </div>
+          </Dialog>
         </div>
-      </Dialog>
+      </div>
     </>
   );
 }
