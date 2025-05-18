@@ -28,7 +28,6 @@ function ProductsPage() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -44,7 +43,6 @@ function ProductsPage() {
       .then(() => {
         queryClient.invalidateQueries(["products"]);
         setEd("add");
-        reset();
         close();
       })
       .catch((error) => {
@@ -62,7 +60,6 @@ function ProductsPage() {
       .then(() => {
         queryClient.invalidateQueries(["products"]);
         setEd("add");
-        reset();
         close();
       })
       .catch((error) => {
@@ -94,8 +91,8 @@ function ProductsPage() {
     queryKey,
     queryFn,
   });
-  if (isLoading) return "Loading...";
-  if (error) return "Error";
+  // if (isLoading) return "Loading...";
+  // if (error) return "Error";
 
   const editHandler = (id) => {
     setProductId(id);

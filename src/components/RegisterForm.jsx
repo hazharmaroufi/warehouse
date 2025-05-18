@@ -18,7 +18,7 @@ const schema = yup
   })
   .required();
 
-function RegisterForm() {
+function RegisterForm({ setMode, loginHandler }) {
   const [registerMessage, setRegisterMessage] = useState("");
   const {
     register,
@@ -45,30 +45,46 @@ function RegisterForm() {
   };
 
   return (
-    <div className=" m-8 rounded-md bg-white p-16 ">
+    <div>
+      <p className="text-center mb-8">فرم ثبت نام</p>
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <input
           {...register("username")}
-          className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
+          className=" bg-gray-50 w-72  mt-2 rounded-md p-1"
+          placeholder=" نام کاربری"
         />
         <br />
         <p>{errors.username?.message}</p>
         <input
           {...register("password")}
           type="password"
-          className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
+          className=" bg-gray-50 w-72  mt-4 rounded-md p-1"
+          placeholder=" رمز عبور"
         />
         <br />
         <p>{errors.password?.message}</p>
         <input
           {...register("confirmPassword")}
           type="password"
-          className=" bg-amber-200 border-gray-400 border-2 mt-2 rounded-md "
+          className=" bg-gray-50 w-72  mt-4 rounded-md p-1"
+          placeholder=" تکرار رمز عبور"
         />
         <br />
         <p>{errors.confirmPassword?.message}</p>
-        <button type="submit">عضویت</button>
+        <button
+          className="bg-blue-300 text-white w-full mt-6 p-2 rounded-md"
+          type="submit"
+        >
+          ثبت نام
+        </button>
         <p>{registerMessage}</p>
+        <button
+          className="mt-2 text-sm text-blue-300"
+          type="button"
+          onClick={loginHandler}
+        >
+          حساب کاربری دارید؟
+        </button>
       </form>
     </div>
   );
