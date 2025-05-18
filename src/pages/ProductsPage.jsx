@@ -104,9 +104,11 @@ function ProductsPage() {
     open();
   };
   const deleteHandler = (id) => {
-    api.delete(`/products/${id}`).then(() => {
-      queryClient.invalidateQueries(["products"]);
-    });
+    if (window.confirm("آیا از حذف این محصول اطمینان دارید؟")) {
+      api.delete(`/products/${id}`).then(() => {
+        queryClient.invalidateQueries(["products"]);
+      });
+    }
   };
 
   return (
